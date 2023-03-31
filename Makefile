@@ -7,6 +7,9 @@ build:
 run:
 	/$(BINARY_NAME)
 
+clean:
+	rm -f ${BINARY_NAME}
+
 build-docker:
 	sudo docker build -t $(BINARY_NAME) .
 
@@ -19,13 +22,8 @@ stop-docker:
 clean-docker:
 	sudo docker rm $(BINARY_NAME)
 
-clean:
-	rm -f ${BINARY_NAME}
-
 init:
 	go mod init $(PACKAGE_NAME) 
 
 tidy:
 	go mod tidy
-
-
