@@ -5,10 +5,11 @@ import (
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/kappaprideonly/ege_bot_2.0/database"
 )
 
 func main() {
-	key, exist := os.LookupEnv("KEY")
+	key, exist := os.LookupEnv("KEY_BOT")
 	log.Printf("%s\n", key)
 	if exist == false {
 		log.Panic("Key doesn't exist")
@@ -17,9 +18,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-
+	database.Init()
 	bot.Debug = true
-
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
