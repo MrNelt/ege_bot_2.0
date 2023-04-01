@@ -14,7 +14,7 @@ build-docker:
 	sudo docker build -t $(BINARY_NAME) .
 
 run-docker:
-	sudo docker run --name $(BINARY_NAME) --rm -d --env-file ./.env $(BINARY_NAME)
+	sudo docker run --name $(BINARY_NAME) --rm -d --env-file config/./.env $(BINARY_NAME)
 
 stop-docker:
 	sudo docker stop $(BINARY_NAME)
