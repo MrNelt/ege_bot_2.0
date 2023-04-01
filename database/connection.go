@@ -13,8 +13,10 @@ import (
 var dbase *gorm.DB
 
 func Init() *gorm.DB {
-	dsl := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", os.Getenv("HOST_DB"), os.Getenv("USER_DB"),
-		os.Getenv("PASS_DB"), os.Getenv("NAME_DB"), os.Getenv("PORT_DB"), os.Getenv("SSLMODE"))
+	dsl := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		os.Getenv("HOST_DB"), os.Getenv("USER_DB"),
+		os.Getenv("PASS_DB"), os.Getenv("NAME_DB"),
+		os.Getenv("PORT_DB"), os.Getenv("SSLMODE"))
 	log.Printf(dsl)
 	db, err := gorm.Open(postgres.Open(dsl), &gorm.Config{})
 	if err != nil {
@@ -22,4 +24,11 @@ func Init() *gorm.DB {
 	}
 	db.AutoMigrate(&models.User{})
 	return db
+}
+
+func GetDB() *gorm.DB {
+	if dbase == nil {
+		dbase = Init()
+	}
+	return dbase
 }

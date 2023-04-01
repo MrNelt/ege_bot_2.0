@@ -12,7 +12,7 @@ type User struct { // postgres struct
 	Record    uint
 }
 
-type Meta struct { // redis struct
+type Token struct { // redis struct
 	condition    string
 	currentScore string
 	answer       string

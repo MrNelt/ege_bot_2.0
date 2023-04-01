@@ -31,9 +31,18 @@ func main() {
 		if update.Message != nil { // If we got a message
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 			log.Printf("%d", update.Message.From.ID)
+			id := update.Message.From.ID
+			name := update.Message.From.FirstName
+			result, _ := database.FindUser(uint(id))
+			if result.Error != nil {
+				log.Printf("Can't find user with id=%d", id)
+				database.CreateUser(uint(id), name, 0)
+			} else {
+				log.Printf("User find!")
+				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Вы авторизованы!"))
+			}
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 			msg.ReplyToMessageID = update.Message.MessageID
-
 			bot.Send(msg)
 		}
 	}
