@@ -35,11 +35,11 @@ func ReceiveToken(id uint) (models.Token, error) {
 }
 
 func UpdateToken(id uint, user models.Token) error {
-	json, err := json.Marshal(user)
+	js, err := json.Marshal(user)
 	if err != nil {
 		log.Printf("[redis] Can't create json")
 	}
 	client := GetClient()
-	err = client.Set(GetCtx(), string(rune(id)), json, time.Duration(GetMinutes())*time.Minute).Err()
+	err = client.Set(GetCtx(), string(rune(id)), js, time.Duration(GetMinutes())*time.Minute).Err()
 	return err
 }
