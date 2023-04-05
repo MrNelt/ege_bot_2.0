@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
+	"github.com/kappaprideonly/ege_bot_2.0/models"
+	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
 )
 
 func main() {
@@ -19,6 +22,7 @@ func main() {
 		log.Panic(err)
 	}
 	database.Init()
+	redisdb.Init()
 	bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -33,17 +37,31 @@ func main() {
 			log.Printf("%d", update.Message.From.ID)
 			id := update.Message.From.ID
 			name := update.Message.From.FirstName
-			result, _ := database.FindUser(uint(id))
-			if result.Error != nil {
-				log.Printf("Can't find user with id=%d", id)
-				database.CreateUser(uint(id), name, 0)
+			if update.Message.Text == "/start" {
+				result, _ := database.FindUser(uint(id))
+				if result.Error != nil {
+					log.Printf("Can't find user with id=%d", id)
+					database.CreateUser(uint(id), name, 0)
+				} else {
+					log.Printf("User find!")
+					bot.Send(tgbotapi.NewMessage(id, "Вы авторизованы!"))
+				}
 			} else {
-				log.Printf("User find!")
-				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Вы авторизованы!"))
+				token, err := redisdb.ReceiveToken(uint(id))
+				if err != nil {
+					user := models.Token{CurrentScore: 0, Answer: "test", Condition: "test", Record: 0}
+					redisdb.UpdateToken(uint(id), user)
+					bot.Send(tgbotapi.NewMessage(id, "Сессия создана!"))
+
+				} else {
+					message := fmt.Sprintf("%v", token)
+					log.Printf(message)
+					bot.Send(tgbotapi.NewMessage(id, message))
+				}
 			}
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
-			bot.Send(msg)
+			// msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+			// msg.ReplyToMessageID = update.Message.MessageID
+			// bot.Send(msg)
 		}
 	}
 }

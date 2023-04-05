@@ -13,7 +13,8 @@ type User struct { // postgres struct
 }
 
 type Token struct { // redis struct
-	condition    string
-	currentScore string
-	answer       string
+	Condition    string `json:"condition"`
+	CurrentScore uint   `json:"currentScore"`
+	Record       uint   `json:"record"`
+	Answer       string `json:"answer"`
 }
