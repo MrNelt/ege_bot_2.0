@@ -3,11 +3,12 @@ module github.com/kappaprideonly/ege_bot_2.0
 go 1.19
 
 require (
-	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/redis/go-redis/v9 v9.0.3
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gorm v1.24.7-0.20230324020705-b444011d094d
 )
+
+require gopkg.in/telebot.v3 v3.1.3
 
 require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
