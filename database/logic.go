@@ -20,6 +20,6 @@ func CreateUser(id uint, name string, record uint) {
 	user := models.User{Name: name, ID: id, Record: record, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	result := DB.Create(&user)
 	if result.Error != nil {
-		log.Fatal("Can't create user")
+		log.Panic("Can't create user")
 	}
 }

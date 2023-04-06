@@ -5,7 +5,7 @@ build:
 	go build -v -o $(BINARY_NAME)
 
 run:
-	/$(BINARY_NAME)
+	./$(BINARY_NAME)
 
 clean:
 	rm -f ${BINARY_NAME}
@@ -14,10 +14,10 @@ build-docker:
 	sudo docker build -t $(BINARY_NAME) .
 
 run-docker-release:
-	sudo docker run --name $(BINARY_NAME) --rm -d --env-file config/./.env $(BINARY_NAME)
+	sudo docker run --name $(BINARY_NAME) --rm -d $(BINARY_NAME)
 
 run-docker:
-	sudo docker run --name $(BINARY_NAME) --rm --env-file config/./.env $(BINARY_NAME)
+	sudo docker run --name $(BINARY_NAME) --rm $(BINARY_NAME)
 
 stop-docker:
 	sudo docker stop $(BINARY_NAME)

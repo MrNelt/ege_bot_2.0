@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/kappaprideonly/ege_bot_2.0/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -26,7 +25,6 @@ func Init() *gorm.DB {
 	if err != nil {
 		log.Panic("Can't connect to db")
 	}
-	db.AutoMigrate(&models.User{})
 	return db
 }
 

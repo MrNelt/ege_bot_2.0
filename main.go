@@ -6,10 +6,17 @@ import (
 	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
 	"github.com/kappaprideonly/ege_bot_2.0/models"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
 )
+
+func init() {
+	if err := godotenv.Load("config/.env"); err != nil {
+		log.Panic("No .env file found")
+	}
+}
 
 func main() {
 	key, exist := os.LookupEnv("KEY_BOT")

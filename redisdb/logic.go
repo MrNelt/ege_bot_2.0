@@ -40,6 +40,7 @@ func UpdateToken(id uint, user models.Token) error {
 		log.Printf("[redis] Can't create json")
 	}
 	client := GetClient()
+
 	err = client.Set(GetCtx(), string(rune(id)), js, time.Duration(GetMinutes())*time.Minute).Err()
 	return err
 }
