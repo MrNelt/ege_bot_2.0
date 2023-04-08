@@ -62,23 +62,19 @@ func main() {
 			message := fmt.Sprintf("🖐🏾 %s, Вы уже зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 			return ctx.Send(message)
 		}
-		database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
+		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		message := fmt.Sprintf("🖐🏾 %s, Вы успешно зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			redisdb.NewToken(uint(ctx.Sender().ID))
+			go redisdb.NewToken(uint(ctx.Sender().ID))
 		} else {
 			MenuSession(&session)
-			redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		}
 		return ctx.Send(message)
 	})
 
-	authOnly := bot.Group()
-
-	//authOnly.Use(middlewares.RedisSession())
-
-	authOnly.Handle("/record", func(ctx tele.Context) error {
+	bot.Handle("/record", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
@@ -88,14 +84,14 @@ func main() {
 		return ctx.Send(record)
 	})
 
-	authOnly.Handle("/begin", func(ctx tele.Context) error {
+	bot.Handle("/begin", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
 		task := tasks.GetTask()
 		BeginTrainingSession(&session, task)
-		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := fmt.Sprintf("%v", task)
 		return ctx.Send(message)
 	})
