@@ -5,7 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
-	"github.com/kappaprideonly/ege_bot_2.0/models"
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 )
 
 func init() {
@@ -16,5 +16,5 @@ func init() {
 
 func main() {
 	db := database.GetDB()
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&model.User{})
 }

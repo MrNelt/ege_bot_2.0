@@ -8,10 +8,11 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
-	"github.com/kappaprideonly/ege_bot_2.0/middlewares"
-	"github.com/kappaprideonly/ege_bot_2.0/models"
+	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
+	middlewares "github.com/kappaprideonly/ege_bot_2.0/middleware"
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
-	"github.com/kappaprideonly/ege_bot_2.0/tasks"
+	"github.com/kappaprideonly/ege_bot_2.0/task"
 	tele "gopkg.in/telebot.v3"
 )
 
@@ -21,15 +22,16 @@ func init() {
 	}
 	database.Init()
 	redisdb.Init()
+	keyboard.CreateAllKeyboard()
 }
 
-func MenuSession(session *models.Token) {
+func MenuSession(session *model.Token) {
 	session.Answer = ""
 	session.Condition = "menu"
 	session.CurrentScore = 0
 }
 
-func BeginTrainingSession(session *models.Token, task models.Task) {
+func BeginTrainingSession(session *model.Token, task model.Task) {
 	session.Answer = task.Answer
 	session.Condition = "training"
 	session.CurrentScore = 0
@@ -89,11 +91,11 @@ func main() {
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
-		task := tasks.GetTask()
+		task := task.GetTask()
 		BeginTrainingSession(&session, task)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := fmt.Sprintf("%v", task)
-		return ctx.Send(message)
+		return ctx.Send(message, keyboard.GetMenuKeyboard())
 	})
 
 	adminOnly := bot.Group()

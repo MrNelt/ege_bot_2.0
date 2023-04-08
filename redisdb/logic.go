@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/kappaprideonly/ege_bot_2.0/database"
-	"github.com/kappaprideonly/ege_bot_2.0/models"
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 )
 
 var minutes int
@@ -24,18 +24,18 @@ func GetMinutes() int {
 	return minutes
 }
 
-func ReceiveToken(id uint) (models.Token, error) {
+func ReceiveToken(id uint) (model.Token, error) {
 	client := GetClient()
 	js, err := client.Get(GetCtx(), string(rune(id))).Result()
 	if err != nil {
-		return models.Token{}, err
+		return model.Token{}, err
 	}
-	user := models.Token{}
+	user := model.Token{}
 	json.Unmarshal([]byte(js), &user)
 	return user, nil
 }
 
-func UpdateToken(id uint, user models.Token) error {
+func UpdateToken(id uint, user model.Token) error {
 	js, err := json.Marshal(user)
 	if err != nil {
 		log.Printf("[redis] Can't create json")
@@ -46,11 +46,11 @@ func UpdateToken(id uint, user models.Token) error {
 	return err
 }
 
-func NewToken(id uint) models.Token {
+func NewToken(id uint) model.Token {
 	user := database.FindUser(id)
-	token := models.Token{}
+	token := model.Token{}
 	token.Answer = ""
-	token.Condition = "menu"
+	token.Condition = "new"
 	token.CurrentScore = 0
 	token.Record = user.Record
 	UpdateToken(id, token)

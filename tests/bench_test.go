@@ -9,7 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
-	"github.com/kappaprideonly/ege_bot_2.0/models"
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
 )
 
@@ -25,7 +25,7 @@ func BenchmarkRedis(b *testing.B) {
 		for i := 0; i < 50; i++ {
 			key := rand.Uint64()
 			tmpKey := fmt.Sprintf("%d", key)
-			redisdb.UpdateToken(uint(key), models.Token{})
+			redisdb.UpdateToken(uint(key), model.Token{})
 			id = append(id, tmpKey)
 		}
 		for i := 0; i < len(id); i++ {
@@ -50,6 +50,6 @@ func BenchmarkPostgres(b *testing.B) {
 			database.FindUser(uint(id[i]))
 		}
 		db := database.GetDB()
-		db.Delete(&models.User{}, "Name LIKE ?", "")
+		db.Delete(&model.User{}, "Name LIKE ?", "")
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/kappaprideonly/ege_bot_2.0/models"
+	models "github.com/kappaprideonly/ege_bot_2.0/model"
 )
 
 func ExistUser(id uint) bool {
