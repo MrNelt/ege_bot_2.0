@@ -23,7 +23,7 @@ func init() {
 	redisdb.Init()
 }
 
-func DefaultSession(session *models.Token) {
+func MenuSession(session *models.Token) {
 	session.Answer = ""
 	session.Condition = "menu"
 	session.CurrentScore = 0
@@ -68,24 +68,31 @@ func main() {
 		if err != nil {
 			redisdb.NewToken(uint(ctx.Sender().ID))
 		} else {
-			DefaultSession(&session)
+			MenuSession(&session)
 			redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		}
 		return ctx.Send(message)
 	})
 
 	authOnly := bot.Group()
-	authOnly.Use(middlewares.RedisSession())
+
+	//authOnly.Use(middlewares.RedisSession())
 
 	authOnly.Handle("/record", func(ctx tele.Context) error {
-		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
 		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		record := fmt.Sprintf("%d", session.Record)
 		return ctx.Send(record)
 	})
 
 	authOnly.Handle("/begin", func(ctx tele.Context) error {
-		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
 		task := tasks.GetTask()
 		BeginTrainingSession(&session, task)
 		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
