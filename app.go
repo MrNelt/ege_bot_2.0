@@ -59,11 +59,11 @@ func main() {
 
 	bot.Handle("/start", func(ctx tele.Context) error {
 		if database.ExistUser(uint(ctx.Sender().ID)) {
-			message := fmt.Sprintf("%s 🖐🏾, Вы уже зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
+			message := fmt.Sprintf("🖐🏾 %s, Вы уже зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 			return ctx.Send(message)
 		}
 		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
-		message := fmt.Sprintf("%s 🖐🏾, Вы успешно зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
+		message := fmt.Sprintf("🖐🏾 %s, Вы успешно зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
 			go redisdb.NewToken(uint(ctx.Sender().ID))
@@ -74,27 +74,29 @@ func main() {
 		return ctx.Send(message)
 	})
 
-	bot.Handle("/record", func(ctx tele.Context) error {
-		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
-		if err != nil {
-			go redisdb.NewToken(uint(ctx.Sender().ID))
-		} else {
-			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
-		}
+	authOnly := bot.Group()
+	authOnly.Use(middlewares.RedisSession())
+
+	authOnly.Handle("/record", func(ctx tele.Context) error {
+		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		record := fmt.Sprintf("%d", session.Record)
 		return ctx.Send(record)
 	})
 
-	bot.Handle("/begin", func(ctx tele.Context) error {
-		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
-		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
-		}
+	authOnly.Handle("/begin", func(ctx tele.Context) error {
+		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		task := tasks.GetTask()
 		BeginTrainingSession(&session, task)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := fmt.Sprintf("%v", task)
 		return ctx.Send(message)
+	})
+
+	adminOnly := bot.Group()
+	adminOnly.Use(middlewares.OnlyAdmin())
+	adminOnly.Handle("/admin", func(ctx tele.Context) error {
+		return ctx.Send("test")
 	})
 
 	bot.Start()
