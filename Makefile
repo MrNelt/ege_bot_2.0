@@ -1,11 +1,8 @@
 BINARY_NAME=bot
 PACKAGE_NAME=github.com/kappaprideonly/ege_bot_2.0
 
-build:
-	go build -v -o $(BINARY_NAME)
-
 run:
-	./$(BINARY_NAME)
+	go run app.go
 
 clean:
 	rm -f ${BINARY_NAME}

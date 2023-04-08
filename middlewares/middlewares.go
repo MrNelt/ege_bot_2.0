@@ -27,8 +27,8 @@ func Logger(logger ...*log.Logger) tele.MiddlewareFunc {
 func OnlyPrivate() tele.MiddlewareFunc {
 	return func(next tele.HandlerFunc) tele.HandlerFunc {
 		return func(c tele.Context) error {
-			if c.Message().Chat.Private {
-				defer c.Respond()
+			if c.Message().Chat.Type != "private" {
+				return nil
 			}
 			return next(c)
 		}
