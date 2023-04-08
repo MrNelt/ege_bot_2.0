@@ -18,3 +18,8 @@ type Token struct { // redis struct
 	Record       uint   `json:"record"`
 	Answer       string `json:"answer"`
 }
+
+type Task struct {
+	Answer string
+	Wrong  [3]string
+}

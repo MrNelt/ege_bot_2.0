@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/kappaprideonly/ege_bot_2.0/database"
 	"github.com/kappaprideonly/ege_bot_2.0/models"
 )
 
@@ -43,4 +44,15 @@ func UpdateToken(id uint, user models.Token) error {
 
 	err = client.Set(GetCtx(), string(rune(id)), js, time.Duration(GetMinutes())*time.Minute).Err()
 	return err
+}
+
+func NewToken(id uint) models.Token {
+	user := database.FindUser(id)
+	token := models.Token{}
+	token.Answer = ""
+	token.Condition = "menu"
+	token.CurrentScore = 0
+	token.Record = user.Record
+	UpdateToken(id, token)
+	return token
 }

@@ -43,7 +43,7 @@ func BenchmarkPostgres(b *testing.B) {
 		id := []uint32{}
 		for i := 0; i < 50; i++ {
 			key := rand.Uint32()
-			database.CreateUser(uint(key), "", 0)
+			database.CreateUser(uint(key), "")
 			id = append(id, key)
 		}
 		for i := 0; i < len(id); i++ {
