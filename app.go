@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
-	middlewares "github.com/kappaprideonly/ege_bot_2.0/middleware"
+	"github.com/kappaprideonly/ege_bot_2.0/middleware"
 	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
 	"github.com/kappaprideonly/ege_bot_2.0/task"
@@ -56,8 +56,8 @@ func main() {
 		return
 	}
 
-	bot.Use(middlewares.Logger())
-	bot.Use(middlewares.OnlyPrivate())
+	bot.Use(middleware.Logger())
+	bot.Use(middleware.OnlyPrivate())
 
 	bot.Handle("/start", func(ctx tele.Context) error {
 		if database.ExistUser(uint(ctx.Sender().ID)) {
@@ -99,7 +99,7 @@ func main() {
 	})
 
 	adminOnly := bot.Group()
-	adminOnly.Use(middlewares.OnlyAdmin())
+	adminOnly.Use(middleware.OnlyAdmin())
 	adminOnly.Handle("/admin", func(ctx tele.Context) error {
 		return ctx.Send("test")
 	})
