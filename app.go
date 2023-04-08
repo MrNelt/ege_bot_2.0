@@ -62,14 +62,14 @@ func main() {
 			message := fmt.Sprintf("🖐🏾 %s, Вы уже зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 			return ctx.Send(message)
 		}
-		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
+		database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		message := fmt.Sprintf("🖐🏾 %s, Вы успешно зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			go redisdb.NewToken(uint(ctx.Sender().ID))
+			redisdb.NewToken(uint(ctx.Sender().ID))
 		} else {
 			DefaultSession(&session)
-			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+			redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		}
 		return ctx.Send(message)
 	})
@@ -79,7 +79,7 @@ func main() {
 
 	authOnly.Handle("/record", func(ctx tele.Context) error {
 		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
-		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		record := fmt.Sprintf("%d", session.Record)
 		return ctx.Send(record)
 	})
@@ -88,7 +88,7 @@ func main() {
 		session, _ := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		task := tasks.GetTask()
 		BeginTrainingSession(&session, task)
-		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := fmt.Sprintf("%v", task)
 		return ctx.Send(message)
 	})
