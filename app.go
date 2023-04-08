@@ -22,7 +22,7 @@ func init() {
 	}
 	database.Init()
 	redisdb.Init()
-	keyboard.CreateAllKeyboard()
+	keyboard.CreateAllKeyboards()
 }
 
 func MenuSession(session *model.Token) {
