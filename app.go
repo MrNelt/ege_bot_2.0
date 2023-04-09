@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/joho/godotenv"
+	"github.com/kappaprideonly/ege_bot_2.0/config"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
 	"github.com/kappaprideonly/ege_bot_2.0/middleware"
@@ -17,9 +17,7 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("config/.env"); err != nil {
-		log.Panic("No .env file found")
-	}
+	config.Init()
 	database.Init()
 	redisdb.Init()
 	keyboard.CreateAllKeyboards()

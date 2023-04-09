@@ -2,21 +2,18 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"strconv"
 	"testing"
 
-	"github.com/joho/godotenv"
+	"github.com/kappaprideonly/ege_bot_2.0/config"
 	"github.com/kappaprideonly/ege_bot_2.0/database"
 	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
 )
 
 func init() {
-	if err := godotenv.Load("../config/.env"); err != nil {
-		log.Panic("No .env file found")
-	}
+	config.Init()
 }
 
 func BenchmarkRedis(b *testing.B) {
