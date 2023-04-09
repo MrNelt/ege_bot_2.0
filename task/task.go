@@ -1,9 +1,37 @@
 package task
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
+	"strings"
 	"time"
+
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 )
+
+var blackWords []string
+var words []string
+
+func Init() {
+
+	content, err := ioutil.ReadFile("task/blackWords.txt")
+	if err != nil {
+		log.Panic(err)
+	}
+	blackWords = strings.Split(string(content), "\n")
+
+	content, err = ioutil.ReadFile("task/words.txt")
+	if err != nil {
+		log.Panic(err)
+	}
+	words = strings.Split(string(content), "\n")
+	for _, v := range words {
+		log.Println(v)
+	}
+
+}
 
 func randInt(min, max int) int {
 	return min + rand.Intn(max-min)
@@ -27,49 +55,29 @@ func getThreeNumbers(min, max int) [3]int {
 	return arr
 }
 
-func GetTask(blackWords []string, words []string) ([4]string, int) {
+func GetTask() model.Task {
 
 	rand.Seed(time.Now().UnixNano())
 
-	var task [4]string
+	var variants [4]string
 
-	task[0] = words[randInt(0, len(words))]
-	answer := task[0]
+	variants[0] = words[randInt(0, len(words))]
+	answer := variants[0]
 
 	numbers := getThreeNumbers(0, len(blackWords))
 
 	for i := 0; i < 3; i++ {
-		task[i+1] = blackWords[numbers[i]]
+		variants[i+1] = blackWords[numbers[i]]
 	}
 
-	rand.Shuffle(len(task), func(i, j int) {
-		task[i], task[j] = task[j], task[i]
+	rand.Shuffle(len(variants), func(i, j int) {
+		variants[i], variants[j] = variants[j], variants[i]
 	})
 
 	i := 0
-	for task[i] != answer {
+	for variants[i] != answer {
 		i++
 	}
-
-	return task, i + 1
+	task := model.Task{Answer: fmt.Sprint(i + 1), Variants: variants}
+	return task
 }
-
-// func main() {
-
-// 	content, err := ioutil.ReadFile("blackWords.txt")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	blackWords := strings.Split(string(content), "\n")
-
-// 	content, err = ioutil.ReadFile("words.txt")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	words := strings.Split(string(content), "\n")
-
-// 	task, answer := GetTask(blackWords, words)
-
-// 	fmt.Println(task, answer)
-
-// }

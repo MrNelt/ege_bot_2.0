@@ -20,6 +20,6 @@ type Token struct { // redis struct
 }
 
 type Task struct {
-	Answer string
-	Wrong  [3]string
+	Answer   string
+	Variants [4]string
 }

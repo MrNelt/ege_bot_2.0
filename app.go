@@ -12,14 +12,16 @@ import (
 	"github.com/kappaprideonly/ege_bot_2.0/middleware"
 	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
+	"github.com/kappaprideonly/ege_bot_2.0/task"
 	tele "gopkg.in/telebot.v3"
 )
 
 func init() {
+	task.Init()
 	config.Init()
 	database.Init()
 	redisdb.Init()
-	keyboard.CreateAllKeyboards()
+	keyboard.Init()
 }
 
 func MenuSession(session *model.Token) {
@@ -110,12 +112,10 @@ func main() {
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
-		// task, numAns := task.GetTask()
-		// BeginTrainingSession(&session, task)
-		// log.Println(session)
+		task := task.GetTask()
+		BeginTrainingSession(&session, task)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
-		// message := fmt.Sprintf("%v", task)
-		message := "111111"
+		message := fmt.Sprintf("%v", task)
 		return ctx.Send(message, keyboard.GetTrainingKeyboard())
 	})
 

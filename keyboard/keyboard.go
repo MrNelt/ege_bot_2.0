@@ -5,7 +5,7 @@ import tele "gopkg.in/telebot.v3"
 var menuKeyboard *tele.ReplyMarkup
 var trainingKeyboard *tele.ReplyMarkup
 
-func CreateAllKeyboards() {
+func Init() {
 	trainingKeyboard = &tele.ReplyMarkup{ResizeKeyboard: true}
 	btn1 := trainingKeyboard.Text("1")
 	btn2 := trainingKeyboard.Text("2")
