@@ -45,8 +45,9 @@ func main() {
 	}
 
 	pref := tele.Settings{
-		Token:  key,
-		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
+		Token:     key,
+		Poller:    &tele.LongPoller{Timeout: 10 * time.Second},
+		ParseMode: "HTML",
 	}
 
 	bot, err := tele.NewBot(pref)
@@ -61,11 +62,18 @@ func main() {
 
 	bot.Handle("/start", func(ctx tele.Context) error {
 		if database.ExistUser(uint(ctx.Sender().ID)) {
-			message := fmt.Sprintf("🖐🏾 %s, Вы уже зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
-			return ctx.Send(message)
+			message := fmt.Sprintf("🖐🏾 <b>%s</b>, Вы уже зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
+			session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+			if err != nil {
+				go redisdb.NewToken(uint(ctx.Sender().ID))
+			} else {
+				MenuSession(&session)
+				go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+			}
+			return ctx.Send(message, keyboard.GetMenuKeyboard())
 		}
 		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
-		message := fmt.Sprintf("🖐🏾 %s, Вы успешно зарегистрированы!\nНачать тренировку - /begin", ctx.Sender().FirstName)
+		message := fmt.Sprintf("🖐🏾 <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
 			go redisdb.NewToken(uint(ctx.Sender().ID))
@@ -73,7 +81,7 @@ func main() {
 			MenuSession(&session)
 			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		}
-		return ctx.Send(message)
+		return ctx.Send(message, keyboard.GetMenuKeyboard())
 	})
 
 	bot.Handle("/record", func(ctx tele.Context) error {
@@ -82,8 +90,22 @@ func main() {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
 		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
-		record := fmt.Sprintf("%d", session.Record)
-		return ctx.Send(record)
+		record := fmt.Sprintf("💪 Ваш рекорд: %d", session.Record)
+		if session.Condition == "training" {
+			return ctx.Send(record, keyboard.GetTrainingKeyboard())
+		}
+		return ctx.Send(record, keyboard.GetMenuKeyboard())
+	})
+
+	bot.Handle("/menu", func(ctx tele.Context) error {
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
+		MenuSession(&session)
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		message := fmt.Sprintf("🪖 <b>%s</b>, Вы в главном меню!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
+		return ctx.Send(message, keyboard.GetMenuKeyboard())
 	})
 
 	bot.Handle("/begin", func(ctx tele.Context) error {
@@ -93,9 +115,25 @@ func main() {
 		}
 		task := task.GetTask()
 		BeginTrainingSession(&session, task)
+		log.Println(session)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := fmt.Sprintf("%v", task)
-		return ctx.Send(message, keyboard.GetMenuKeyboard())
+		return ctx.Send(message, keyboard.GetTrainingKeyboard())
+	})
+
+	bot.Handle(tele.OnText, func(ctx tele.Context) error {
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
+		if session.Condition == "new" {
+			return ctx.Send(fmt.Sprintf("⌛️ <b>%s</b>, Ваша сессия была окончена!\nНачать новую тренировку - <b>/begin</b>", ctx.Sender().FirstName), keyboard.GetMenuKeyboard())
+		} else if session.Condition == "training" {
+
+			return ctx.Send("mock training")
+		}
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		return ctx.Send(fmt.Sprintf("😤 <b>%s</b>, Я Вас не понимаю!", ctx.Sender().FirstName), keyboard.GetMenuKeyboard())
 	})
 
 	adminOnly := bot.Group()
