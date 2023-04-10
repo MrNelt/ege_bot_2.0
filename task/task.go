@@ -27,10 +27,6 @@ func Init() {
 		log.Panic(err)
 	}
 	words = strings.Split(string(content), "\n")
-	for _, v := range words {
-		log.Println(v)
-	}
-
 }
 
 func randInt(min, max int) int {
@@ -55,7 +51,7 @@ func getThreeNumbers(min, max int) [3]int {
 	return arr
 }
 
-func GetTask() model.Task {
+func GetTask() (model.Task, string) {
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -79,5 +75,9 @@ func GetTask() model.Task {
 		i++
 	}
 	task := model.Task{Answer: fmt.Sprint(i + 1), Variants: variants}
-	return task
+	message := "❔ Укажите вариант ответа, в которых <b>верно</b> выделена буква, обозначающая ударный гласный звук.\n"
+	for i, v := range task.Variants {
+		message += fmt.Sprintf("%d) %s\n", i+1, v)
+	}
+	return task, message
 }

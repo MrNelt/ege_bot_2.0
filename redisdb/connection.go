@@ -16,6 +16,7 @@ func Init() *redis.Client {
 	db := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("HOST_REDIS"),
 		Password: os.Getenv("PASS_REDIS"),
+		PoolSize: 1000,
 		DB:       0,
 	})
 	_, err := db.Ping(ctx).Result()

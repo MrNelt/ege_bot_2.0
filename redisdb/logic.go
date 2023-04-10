@@ -2,6 +2,7 @@ package redisdb
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -25,14 +26,15 @@ func GetMinutes() int {
 }
 
 func ReceiveToken(id uint) (model.Token, error) {
-	client := GetClient()
-	js, err := client.Get(GetCtx(), string(rune(id))).Result()
+	conn := GetClient()
+	js, err := conn.Get(GetCtx(), fmt.Sprint(id)).Result()
 	if err != nil {
 		return model.Token{}, err
 	}
 	user := model.Token{}
 	json.Unmarshal([]byte(js), &user)
 	return user, nil
+
 }
 
 func UpdateToken(id uint, user model.Token) error {
@@ -40,9 +42,8 @@ func UpdateToken(id uint, user model.Token) error {
 	if err != nil {
 		log.Printf("[redis] Can't create json")
 	}
-	client := GetClient()
-
-	err = client.Set(GetCtx(), string(rune(id)), js, time.Duration(GetMinutes())*time.Minute).Err()
+	conn := GetClient()
+	err = conn.Set(GetCtx(), fmt.Sprint(id), js, time.Duration(GetMinutes())*time.Minute).Err()
 	return err
 }
 

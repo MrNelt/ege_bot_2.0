@@ -20,8 +20,8 @@ func init() {
 	task.Init()
 	config.Init()
 	database.Init()
-	redisdb.Init()
 	keyboard.Init()
+	redisdb.Init()
 }
 
 func MenuSession(session *model.Token) {
@@ -88,7 +88,7 @@ func main() {
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
-		redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		record := fmt.Sprintf("💪 Ваш рекорд: %d", session.Record)
 		if session.Condition == "training" {
 			return ctx.Send(record, keyboard.GetTrainingKeyboard())
@@ -112,10 +112,9 @@ func main() {
 		if err != nil {
 			session = redisdb.NewToken(uint(ctx.Sender().ID))
 		}
-		task := task.GetTask()
+		task, message := task.GetTask()
 		BeginTrainingSession(&session, task)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
-		message := fmt.Sprintf("%v", task)
 		return ctx.Send(message, keyboard.GetTrainingKeyboard())
 	})
 
@@ -127,8 +126,22 @@ func main() {
 		if session.Condition == "new" {
 			return ctx.Send(fmt.Sprintf("⌛️ <b>%s</b>, Ваша сессия была окончена!\nНачать новую тренировку - <b>/begin</b>", ctx.Sender().FirstName), keyboard.GetMenuKeyboard())
 		} else if session.Condition == "training" {
-
-			return ctx.Send("mock training")
+			if ctx.Text() != session.Answer {
+				message := fmt.Sprintf("❌ Неверно!\nВаш score: <b>[%d]</b>\nНачать тренировку - <b>/begin</b>", session.CurrentScore)
+				MenuSession(&session)
+				go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+				return ctx.Send(message, keyboard.GetMenuKeyboard())
+			}
+			session.CurrentScore += 1
+			if session.CurrentScore > session.Record {
+				session.Record++
+				go database.UpdateRecordUser(uint(ctx.Sender().ID), session.Record)
+			}
+			task, question := task.GetTask()
+			session.Answer = task.Answer
+			message := fmt.Sprintf("✅ Верно!\nВаш score: <b>[%d]</b>\nСледующее задание:\n%s", session.CurrentScore, question)
+			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+			return ctx.Send(message, keyboard.GetTrainingKeyboard())
 		}
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		return ctx.Send(fmt.Sprintf("😤 <b>%s</b>, Я Вас не понимаю!", ctx.Sender().FirstName), keyboard.GetMenuKeyboard())

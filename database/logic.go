@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/kappaprideonly/ege_bot_2.0/model"
 	models "github.com/kappaprideonly/ege_bot_2.0/model"
 )
 
@@ -28,4 +29,10 @@ func CreateUser(id uint, name string) {
 	if result.Error != nil {
 		log.Panic("Can't create user")
 	}
+}
+
+func UpdateRecordUser(id, record uint) {
+	DB := GetDB()
+	user := model.User{ID: id}
+	DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record})
 }
