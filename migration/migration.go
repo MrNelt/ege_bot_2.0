@@ -17,5 +17,5 @@ func init() {
 func main() {
 	db := database.GetDB()
 	db.AutoMigrate(&model.User{})
-	db.Delete(&model.User{}, "name LIKE ?", "Markit")
+	db.Delete(&model.User{}, "name LIKE ?", "Leeroy")
 }
