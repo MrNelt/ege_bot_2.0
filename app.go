@@ -12,16 +12,18 @@ import (
 	"github.com/kappaprideonly/ege_bot_2.0/middleware"
 	"github.com/kappaprideonly/ege_bot_2.0/model"
 	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
+	"github.com/kappaprideonly/ege_bot_2.0/sheduler"
 	"github.com/kappaprideonly/ege_bot_2.0/task"
 	tele "gopkg.in/telebot.v3"
 )
 
 func init() {
-	task.Init()
 	config.Init()
+	task.Init()
 	database.Init()
 	keyboard.Init()
 	redisdb.Init()
+	sheduler.Init()
 }
 
 func MenuSession(session *model.Token) {
@@ -94,6 +96,33 @@ func main() {
 			return ctx.Send(record, keyboard.GetTrainingKeyboard())
 		}
 		return ctx.Send(record, keyboard.GetMenuKeyboard())
+	})
+
+	bot.Handle("/leaderboard", func(ctx tele.Context) error {
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		leaderboard := sheduler.GetLeaderboard()
+		if session.Condition == "training" {
+			return ctx.Send(leaderboard, keyboard.GetTrainingKeyboard())
+		}
+		return ctx.Send(leaderboard, keyboard.GetMenuKeyboard())
+	})
+
+	bot.Handle("/stats", func(ctx tele.Context) error {
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		count := sheduler.GetCount()
+		message := fmt.Sprintf("📊 Количество пользователей: %d", count)
+		if session.Condition == "training" {
+			return ctx.Send(message, keyboard.GetTrainingKeyboard())
+		}
+		return ctx.Send(message, keyboard.GetMenuKeyboard())
 	})
 
 	bot.Handle("/menu", func(ctx tele.Context) error {

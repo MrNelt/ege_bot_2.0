@@ -75,7 +75,7 @@ func GetTask() (model.Task, string) {
 		i++
 	}
 	task := model.Task{Answer: fmt.Sprint(i + 1), Variants: variants}
-	message := "❔ Укажите вариант ответа, в которых <b>верно</b> выделена буква, обозначающая ударный гласный звук.\n"
+	message := "✍️ Укажите вариант ответа, в которых <b>верно</b> выделена буква, обозначающая ударный гласный звук.\n"
 	for i, v := range task.Variants {
 		message += fmt.Sprintf("%d) %s\n", i+1, v)
 	}

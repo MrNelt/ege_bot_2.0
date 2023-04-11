@@ -36,3 +36,17 @@ func UpdateRecordUser(id, record uint) {
 	user := model.User{ID: id}
 	DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record})
 }
+
+func GetUsersOrderedByRecord() []model.User {
+	DB := GetDB()
+	users := []model.User{}
+	DB.Limit(10).Order("record desc").Find(&users)
+	return users
+}
+
+func CountOfUsers() int64 {
+	DB := GetDB()
+	var count int64
+	DB.Model(model.User{}).Count(&count)
+	return count
+}
