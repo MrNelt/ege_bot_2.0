@@ -27,7 +27,7 @@ func FindUser(id uint, name string) models.User {
 
 func CreateUser(id uint, name string, record uint) {
 	DB := GetDB()
-	user := models.User{Name: name, ID: id, Record: 0, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+	user := models.User{Name: name, ID: id, Record: record, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	result := DB.Create(&user)
 	if result.Error != nil {
 		log.Panic("Can't create user")
