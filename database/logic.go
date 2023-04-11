@@ -37,7 +37,7 @@ func CreateUser(id uint, name string, record uint) {
 func UpdateRecordUser(id, record uint, name string) {
 	DB := GetDB()
 	user := model.User{ID: id}
-	if DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record}).Error != nil {
+	if result := DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record}); result.Error != nil {
 		CreateUser(id, name, record)
 	}
 }
