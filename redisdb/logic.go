@@ -47,8 +47,8 @@ func UpdateToken(id uint, user model.Token) error {
 	return err
 }
 
-func NewToken(id uint) model.Token {
-	user := database.FindUser(id)
+func NewToken(id uint, name string) model.Token {
+	user := database.FindUser(id, name)
 	token := model.Token{}
 	token.Answer = ""
 	token.Condition = "new"

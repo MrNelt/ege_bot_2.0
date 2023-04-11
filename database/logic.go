@@ -15,14 +15,16 @@ func ExistUser(id uint) bool {
 	return result.Error == nil
 }
 
-func FindUser(id uint) models.User {
+func FindUser(id uint, name string) models.User {
 	DB := GetDB()
 	user := models.User{}
-	DB.First(&user, id)
+	if DB.First(&user, id) != nil {
+		CreateUser(id, name, 0)
+	}
 	return user
 }
 
-func CreateUser(id uint, name string) {
+func CreateUser(id uint, name string, record uint) {
 	DB := GetDB()
 	user := models.User{Name: name, ID: id, Record: 0, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	result := DB.Create(&user)
@@ -31,10 +33,12 @@ func CreateUser(id uint, name string) {
 	}
 }
 
-func UpdateRecordUser(id, record uint) {
+func UpdateRecordUser(id, record uint, name string) {
 	DB := GetDB()
 	user := model.User{ID: id}
-	DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record})
+	if DB.Model(&user).Updates(model.User{UpdatedAt: time.Now(), Record: record}) != nil {
+		CreateUser(id, name, record)
+	}
 }
 
 func GetUsersOrderedByRecord() []model.User {

@@ -71,18 +71,18 @@ func main() {
 			message := fmt.Sprintf("👍 <b>%s</b>, Вы уже зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 			session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 			if err != nil {
-				go redisdb.NewToken(uint(ctx.Sender().ID))
+				go redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 			} else {
 				MenuSession(&session)
 				go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 			}
 			return ctx.Send(message, keyboard.GetMenuKeyboard())
 		}
-		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
+		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName, 0)
 		message := fmt.Sprintf("✅ <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			go redisdb.NewToken(uint(ctx.Sender().ID))
+			go redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		} else {
 			MenuSession(&session)
 			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
@@ -93,7 +93,7 @@ func main() {
 	bot.Handle("/record", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		record := fmt.Sprintf("💪 Ваш рекорд: %d", session.Record)
@@ -106,7 +106,7 @@ func main() {
 	bot.Handle("/leaderboard", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		leaderboard := sheduler.GetLeaderboard()
@@ -119,7 +119,7 @@ func main() {
 	bot.Handle("/stats", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		count := sheduler.GetCount()
@@ -133,7 +133,7 @@ func main() {
 	bot.Handle("/help", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		message := help
@@ -146,7 +146,7 @@ func main() {
 	bot.Handle("/menu", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		MenuSession(&session)
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
@@ -157,7 +157,7 @@ func main() {
 	bot.Handle("/begin", func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		task, message := task.GetTask()
 		BeginTrainingSession(&session, task)
@@ -168,7 +168,7 @@ func main() {
 	bot.Handle(tele.OnText, func(ctx tele.Context) error {
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
-			session = redisdb.NewToken(uint(ctx.Sender().ID))
+			session = redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 		}
 		if session.Condition == "new" {
 			return ctx.Send(fmt.Sprintf("⌛️ <b>%s</b>, Ваша сессия была окончена!\nНачать новую тренировку - <b>/begin</b>", ctx.Sender().FirstName), keyboard.GetMenuKeyboard())
@@ -182,7 +182,7 @@ func main() {
 			session.CurrentScore += 1
 			if session.CurrentScore > session.Record {
 				session.Record++
-				go database.UpdateRecordUser(uint(ctx.Sender().ID), session.Record)
+				go database.UpdateRecordUser(uint(ctx.Sender().ID), session.Record, ctx.Sender().FirstName)
 			}
 			task, question := task.GetTask()
 			session.Answer = task.Answer

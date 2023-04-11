@@ -54,7 +54,7 @@ func RedisSession() tele.MiddlewareFunc {
 		return func(ctx tele.Context) error {
 			_, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 			if err != nil {
-				redisdb.NewToken(uint(ctx.Sender().ID))
+				redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 			}
 			return next(ctx)
 		}
