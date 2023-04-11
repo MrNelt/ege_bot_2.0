@@ -17,6 +17,8 @@ import (
 	tele "gopkg.in/telebot.v3"
 )
 
+var help string
+
 func init() {
 	config.Init()
 	task.Init()
@@ -24,6 +26,9 @@ func init() {
 	keyboard.Init()
 	redisdb.Init()
 	sheduler.Init()
+	help = fmt.Sprint("🤚 <em>Привет! Это бот для подготовки к 4 заданию ЕГЭ, возможно он расширится и позволит решать ВСЕ 26 заданий!\n\n</em>")
+	help += fmt.Sprint("Информация для команд /leaderboard и /stats обновляется раз в некоторое время!")
+
 }
 
 func MenuSession(session *model.Token) {
@@ -63,7 +68,7 @@ func main() {
 
 	bot.Handle("/start", func(ctx tele.Context) error {
 		if database.ExistUser(uint(ctx.Sender().ID)) {
-			message := fmt.Sprintf("🖐🏾 <b>%s</b>, Вы уже зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
+			message := fmt.Sprintf("👍 <b>%s</b>, Вы уже зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 			session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 			if err != nil {
 				go redisdb.NewToken(uint(ctx.Sender().ID))
@@ -74,7 +79,7 @@ func main() {
 			return ctx.Send(message, keyboard.GetMenuKeyboard())
 		}
 		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName)
-		message := fmt.Sprintf("🖐🏾 <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
+		message := fmt.Sprintf("✅ <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
 			go redisdb.NewToken(uint(ctx.Sender().ID))
@@ -82,7 +87,7 @@ func main() {
 			MenuSession(&session)
 			go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		}
-		return ctx.Send(message, keyboard.GetMenuKeyboard())
+		return ctx.Send(message+"\n"+help, keyboard.GetMenuKeyboard())
 	})
 
 	bot.Handle("/record", func(ctx tele.Context) error {
@@ -119,6 +124,19 @@ func main() {
 		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
 		count := sheduler.GetCount()
 		message := fmt.Sprintf("📊 Количество пользователей: %d", count)
+		if session.Condition == "training" {
+			return ctx.Send(message, keyboard.GetTrainingKeyboard())
+		}
+		return ctx.Send(message, keyboard.GetMenuKeyboard())
+	})
+
+	bot.Handle("/help", func(ctx tele.Context) error {
+		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+		if err != nil {
+			session = redisdb.NewToken(uint(ctx.Sender().ID))
+		}
+		go redisdb.UpdateToken(uint(ctx.Sender().ID), session)
+		message := help
 		if session.Condition == "training" {
 			return ctx.Send(message, keyboard.GetTrainingKeyboard())
 		}
