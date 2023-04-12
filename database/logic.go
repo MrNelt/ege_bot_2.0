@@ -18,7 +18,7 @@ func ExistUser(id uint) bool {
 func FindUser(id uint, name string) models.User {
 	DB := GetDB()
 	user := models.User{}
-	if DB.First(&user, id).Error != nil {
+	if result := DB.First(&user, id); result.Error != nil {
 		CreateUser(id, name, 0)
 		DB.First(&user, id)
 	}
