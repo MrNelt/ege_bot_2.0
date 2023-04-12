@@ -32,13 +32,13 @@ func updateLeaderboard() {
 	leaderboard = "🏆 Таблица лидеров:\n\n"
 	for i, v := range users {
 		if i == 0 {
-			leaderboard += fmt.Sprintf("🥇: %s - [%d]\n", v.Name, v.Record)
+			leaderboard += fmt.Sprintf("🥇 %s - [%d]\n", v.Name, v.Record)
 		} else if i == 1 {
-			leaderboard += fmt.Sprintf("🥈: %s - [%d]\n", v.Name, v.Record)
+			leaderboard += fmt.Sprintf("🥈 %s - [%d]\n", v.Name, v.Record)
 		} else if i == 2 {
-			leaderboard += fmt.Sprintf("🥉: %s - [%d]\n", v.Name, v.Record)
+			leaderboard += fmt.Sprintf("🥉 %s - [%d]\n", v.Name, v.Record)
 		} else {
-			leaderboard += fmt.Sprintf("%d): %s - [%d]\n", i+1, v.Name, v.Record)
+			leaderboard += fmt.Sprintf(" %d)   %s - [%d]\n", i+1, v.Name, v.Record)
 		}
 	}
 }
