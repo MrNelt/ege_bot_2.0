@@ -78,7 +78,7 @@ func main() {
 			}
 			return ctx.Send(message, keyboard.GetMenuKeyboard())
 		}
-		go database.CreateUser(uint(ctx.Sender().ID), ctx.Sender().FirstName, 0)
+		go database.AddUser(uint(ctx.Sender().ID), 0, ctx.Sender().FirstName)
 		message := fmt.Sprintf("✅ <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 		session, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
 		if err != nil {
