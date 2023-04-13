@@ -2,34 +2,63 @@ package keyboard
 
 import tele "gopkg.in/telebot.v3"
 
-var menuKeyboard *tele.ReplyMarkup
-var trainingKeyboard *tele.ReplyMarkup
+type keyboard interface {
+	init()
+	get() *tele.ReplyMarkup
+}
+
+type TrainingKeyboard struct {
+	keyboard *tele.ReplyMarkup
+}
+
+func (k TrainingKeyboard) get() *tele.ReplyMarkup {
+	return k.keyboard
+}
+
+func (k *TrainingKeyboard) init() {
+	k.keyboard = &tele.ReplyMarkup{ResizeKeyboard: true}
+	btn1 := k.keyboard.Text("1")
+	btn2 := k.keyboard.Text("2")
+	btn3 := k.keyboard.Text("3")
+	btn4 := k.keyboard.Text("4")
+	k.keyboard.Reply(
+		k.keyboard.Row(btn1, btn2),
+		k.keyboard.Row(btn3, btn4),
+	)
+}
+
+type MenuKeyboard struct {
+	keyboard *tele.ReplyMarkup
+}
+
+func (k MenuKeyboard) get() *tele.ReplyMarkup {
+	return k.keyboard
+}
+
+func (k *MenuKeyboard) init() {
+	k.keyboard = &tele.ReplyMarkup{ResizeKeyboard: true}
+	btnBegin := k.keyboard.Text("/begin")
+	btnRecord := k.keyboard.Text("/record")
+	btnLeader := k.keyboard.Text("/leaderboard")
+	btnStats := k.keyboard.Text("/stats")
+	k.keyboard.Reply(
+		k.keyboard.Row(btnBegin, btnStats),
+		k.keyboard.Row(btnRecord, btnLeader),
+	)
+}
+
+var menuKeyboard MenuKeyboard
+var trainingKeyboard TrainingKeyboard
 
 func Init() {
-	trainingKeyboard = &tele.ReplyMarkup{ResizeKeyboard: true}
-	btn1 := trainingKeyboard.Text("1")
-	btn2 := trainingKeyboard.Text("2")
-	btn3 := trainingKeyboard.Text("3")
-	btn4 := trainingKeyboard.Text("4")
-	trainingKeyboard.Reply(
-		trainingKeyboard.Row(btn1, btn2),
-		trainingKeyboard.Row(btn3, btn4),
-	)
-	menuKeyboard = &tele.ReplyMarkup{ResizeKeyboard: true}
-	btnBegin := menuKeyboard.Text("/begin")
-	btnRecord := menuKeyboard.Text("/record")
-	btnLeader := menuKeyboard.Text("/leaderboard")
-	btnStats := menuKeyboard.Text("/stats")
-	menuKeyboard.Reply(
-		menuKeyboard.Row(btnBegin, btnStats),
-		menuKeyboard.Row(btnRecord, btnLeader),
-	)
+	menuKeyboard.init()
+	trainingKeyboard.init()
 }
 
 func GetMenuKeyboard() *tele.ReplyMarkup {
-	return menuKeyboard
+	return menuKeyboard.get()
 }
 
 func GetTrainingKeyboard() *tele.ReplyMarkup {
-	return trainingKeyboard
+	return trainingKeyboard.get()
 }
