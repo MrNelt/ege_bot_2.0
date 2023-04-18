@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/kappaprideonly/ege_bot_2.0/redisdb"
+	"github.com/kappaprideonly/ege_bot_2.0/manager/session"
 	tele "gopkg.in/telebot.v3"
 )
 
@@ -52,9 +52,9 @@ func OnlyAdmin() tele.MiddlewareFunc {
 func RedisSession() tele.MiddlewareFunc {
 	return func(next tele.HandlerFunc) tele.HandlerFunc {
 		return func(ctx tele.Context) error {
-			_, err := redisdb.ReceiveToken(uint(ctx.Sender().ID))
+			_, err := session.GetToken(uint(ctx.Sender().ID))
 			if err != nil {
-				redisdb.NewToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
+				session.CreateToken(uint(ctx.Sender().ID), ctx.Sender().FirstName)
 			}
 			return next(ctx)
 		}

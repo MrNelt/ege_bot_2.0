@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/kappaprideonly/ege_bot_2.0/model"
+	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

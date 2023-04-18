@@ -1,11 +1,11 @@
-package database
+package storage
 
 import (
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/kappaprideonly/ege_bot_2.0/model"
+	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
 )
 
 type Storage interface {

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"github.com/kappaprideonly/ege_bot_2.0/database"
+	"github.com/kappaprideonly/ege_bot_2.0/manager/storage"
 )
 
 var leaderboard string
@@ -28,7 +28,7 @@ func Init() {
 
 func updateLeaderboard() {
 	log.Print("[sheduler] update leaderboard")
-	users := database.GetUsersOrderedByRecord()
+	users := storage.GetUsersOrderedByRecord()
 	leaderboard = "🏆 Таблица лидеров:\n\n"
 	for i, v := range users {
 		if i == 0 {
@@ -49,7 +49,7 @@ func GetLeaderboard() string {
 
 func updateCount() {
 	log.Print("[sheduler] update count")
-	count = database.CountOfUsers()
+	count = storage.CountOfUsers()
 }
 
 func GetCount() int64 {

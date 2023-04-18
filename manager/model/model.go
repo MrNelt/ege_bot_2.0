@@ -10,6 +10,7 @@ type User struct { // postgres struct
 	UpdatedAt time.Time
 	Name      string
 	Record    uint
+	
 }
 
 type Token struct { // redis struct
