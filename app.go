@@ -60,8 +60,7 @@ func main() {
 	bot, err := tele.NewBot(pref)
 
 	if err != nil {
-		log.Fatal(err)
-		return
+		log.Panic(err)
 	}
 
 	bot.Use(middleware.Logger())
