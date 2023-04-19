@@ -11,7 +11,7 @@ build-docker:
 	sudo docker build -t $(BINARY_NAME) .
 
 run-docker-release:
-	sudo docker run --name $(BINARY_NAME) --rm -d $(BINARY_NAME)
+	sudo docker run --name $(BINARY_NAME) -d $(BINARY_NAME)
 
 run-docker:
 	sudo docker run --name $(BINARY_NAME)
