@@ -14,7 +14,7 @@ run-docker-release:
 	sudo docker run --name $(BINARY_NAME) --rm -d $(BINARY_NAME)
 
 run-docker:
-	sudo docker run --name $(BINARY_NAME) --rm $(BINARY_NAME)
+	sudo docker run --name $(BINARY_NAME)
 
 stop-docker:
 	sudo docker stop $(BINARY_NAME)
