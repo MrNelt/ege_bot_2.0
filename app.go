@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
+
 	"os"
 	"time"
 
+	log "github.com/bearatol/lg"
 	"github.com/kappaprideonly/ege_bot_2.0/config"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
@@ -45,7 +46,7 @@ func BeginTrainingSession(session *model.Token, task model.Task) {
 
 func main() {
 	key, exist := os.LookupEnv("KEY_BOT")
-	log.Printf("[key] %s\n", key)
+	log.Debugf("[key] %s\n", key)
 	if exist == false {
 		log.Panic("Key doesn't exist")
 	}

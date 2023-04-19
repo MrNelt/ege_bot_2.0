@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"log"
+	log "github.com/bearatol/lg"
 	"time"
 
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
@@ -14,7 +14,7 @@ type PgStorage struct {
 }
 
 func NewPgStorage(dsl string) *PgStorage {
-	log.Printf("[postgres] %s", dsl)
+	log.Debug("[postgres] %s", dsl)
 	db, err := gorm.Open(postgres.Open(dsl), &gorm.Config{})
 	if err != nil {
 		log.Panic("Can't connect to db")

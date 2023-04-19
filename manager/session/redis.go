@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	log "github.com/bearatol/lg"
 	"time"
 
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
@@ -19,7 +19,7 @@ type RedisSessionDB struct {
 }
 
 func NewRedisSessionDB(host, pass string, timeSession int) *RedisSessionDB {
-	log.Printf("[redis] %s, %s", host, pass)
+	log.Debugf("[redis] %s, %s", host, pass)
 	db := redis.NewClient(&redis.Options{
 		Addr:     host,
 		Password: pass,
@@ -48,7 +48,7 @@ func (r *RedisSessionDB) getToken(id uint) (model.Token, error) {
 func (r *RedisSessionDB) updateToken(id uint, user model.Token) error {
 	js, err := json.Marshal(user)
 	if err != nil {
-		log.Printf("[redis] Can't create json")
+		log.Error("[redis] Can't create json")
 	}
 	conn := r.client
 	err = conn.Set(*r.ctx, fmt.Sprint(id), js, time.Duration(r.timeSession)*time.Minute).Err()

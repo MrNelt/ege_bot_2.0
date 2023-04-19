@@ -2,10 +2,11 @@ package sheduler
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
+
+	log "github.com/bearatol/lg"
 
 	"github.com/go-co-op/gocron"
 	"github.com/kappaprideonly/ege_bot_2.0/manager/storage"
@@ -27,7 +28,7 @@ func Init() {
 }
 
 func updateLeaderboard() {
-	log.Print("[sheduler] update leaderboard")
+	log.Info("[sheduler] update leaderboard")
 	users := storage.GetUsersOrderedByRecord()
 	leaderboard = "🏆 Таблица лидеров:\n\n"
 	for i, v := range users {
@@ -48,7 +49,7 @@ func GetLeaderboard() string {
 }
 
 func updateCount() {
-	log.Print("[sheduler] update count")
+	log.Info("[sheduler] update count")
 	count = storage.CountOfUsers()
 }
 

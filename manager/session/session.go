@@ -1,9 +1,10 @@
 package session
 
 import (
-	"log"
 	"os"
 	"strconv"
+
+	log "github.com/bearatol/lg"
 
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
 )
@@ -21,7 +22,7 @@ func Init() {
 	pass := os.Getenv("PASS_REDIS")
 	minutes, errParse := strconv.Atoi(os.Getenv("SESSION_TIME_MIN"))
 	if errParse != nil {
-		log.Panic("[redis] Can't parse SESSION_TIME_MIN to int")
+		log.Panic("[session] Can't parse SESSION_TIME_MIN to int")
 	}
 	sessionDB = NewRedisSessionDB(host, pass, minutes)
 }

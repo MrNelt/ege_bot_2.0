@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	log "github.com/bearatol/lg"
 
 	"github.com/joho/godotenv"
 )

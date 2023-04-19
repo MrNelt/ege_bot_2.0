@@ -1,27 +1,20 @@
 package middleware
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
+
+	log "github.com/bearatol/lg"
 
 	"github.com/kappaprideonly/ege_bot_2.0/manager/session"
 	tele "gopkg.in/telebot.v3"
 )
 
-func Logger(logger ...*log.Logger) tele.MiddlewareFunc {
-	var l *log.Logger
-	if len(logger) > 0 {
-		l = logger[0]
-	} else {
-		l = log.Default()
-	}
+func Logger() tele.MiddlewareFunc {
 
 	return func(next tele.HandlerFunc) tele.HandlerFunc {
 		return func(ctx tele.Context) error {
-			data, _ := json.MarshalIndent(ctx.Update(), "", "  ")
-			l.Println(string(data))
+			log.Infof("%s : %s", ctx.Sender().FirstName, ctx.Text())
 			return next(ctx)
 		}
 	}

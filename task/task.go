@@ -3,10 +3,11 @@ package task
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"strings"
 	"time"
+
+	log "github.com/bearatol/lg"
 
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
 )

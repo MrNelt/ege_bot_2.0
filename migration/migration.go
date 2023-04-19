@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
+
+	log "github.com/bearatol/lg"
 
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/manager/model"
@@ -26,7 +27,7 @@ func main() {
 		os.Getenv("NAME_DB"),
 		os.Getenv("PORT_DB"),
 		os.Getenv("SSLMODE"))
-	log.Printf("[postgres] %s", dsl)
+	log.Debug("[postgres] %s", dsl)
 	db, err := gorm.Open(postgres.Open(dsl), &gorm.Config{})
 	if err != nil {
 		log.Panic("Can't connect to db")
