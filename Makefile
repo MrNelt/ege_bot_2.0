@@ -16,14 +16,11 @@ run-docker-release:
 run-docker:
 	sudo docker run --name $(BINARY_NAME)
 
+clean-docker:
+	sudo docker remove $(BINARY_NAME)
+
 stop-docker:
 	sudo docker stop $(BINARY_NAME)
-
-clean-docker:
-	sudo docker rm $(BINARY_NAME)
-
-init:
-	go mod init $(PACKAGE_NAME) 
 
 tidy:
 	go mod tidy

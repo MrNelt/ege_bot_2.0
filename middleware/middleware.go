@@ -14,7 +14,7 @@ func Logger() tele.MiddlewareFunc {
 
 	return func(next tele.HandlerFunc) tele.HandlerFunc {
 		return func(ctx tele.Context) error {
-			log.Infof("%s : %s", ctx.Sender().FirstName, ctx.Text())
+			log.Tracef("%s : %s", ctx.Sender().FirstName, ctx.Text())
 			return next(ctx)
 		}
 	}
