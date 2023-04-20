@@ -1,11 +1,9 @@
 package main
 
 import (
-	"os"
-	"time"
-
 	log "github.com/bearatol/lg"
 	"github.com/joho/godotenv"
+	"github.com/kappaprideonly/ege_bot_2.0/bot"
 	"github.com/kappaprideonly/ege_bot_2.0/handler"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
 	sessionDB "github.com/kappaprideonly/ege_bot_2.0/manager/session"
@@ -15,8 +13,6 @@ import (
 	"github.com/kappaprideonly/ege_bot_2.0/task"
 	tele "gopkg.in/telebot.v3"
 )
-
-var help string
 
 func init() {
 	if err := godotenv.Load(); err != nil {
@@ -30,23 +26,8 @@ func init() {
 }
 
 func main() {
-	key, exist := os.LookupEnv("KEY_BOT")
-	log.Debugf("[key] %s\n", key)
-	if exist == false {
-		log.Panic("Key doesn't exist")
-	}
 
-	pref := tele.Settings{
-		Token:     key,
-		Poller:    &tele.LongPoller{Timeout: 10 * time.Second},
-		ParseMode: "HTML",
-	}
-
-	bot, err := tele.NewBot(pref)
-
-	if err != nil {
-		log.Panic(err)
-	}
+	bot := bot.NewBot()
 
 	bot.Use(middleware.Logger())
 	bot.Use(middleware.OnlyPrivate())
