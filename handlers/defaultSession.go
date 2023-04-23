@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import "github.com/kappaprideonly/ege_bot_2.0/manager/model"
 

@@ -4,11 +4,11 @@ import (
 	log "github.com/bearatol/lg"
 	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/bot"
-	"github.com/kappaprideonly/ege_bot_2.0/handler"
+	"github.com/kappaprideonly/ege_bot_2.0/handlers"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
 	sessionDB "github.com/kappaprideonly/ege_bot_2.0/manager/session"
 	"github.com/kappaprideonly/ege_bot_2.0/manager/storage"
-	"github.com/kappaprideonly/ege_bot_2.0/middleware"
+	"github.com/kappaprideonly/ege_bot_2.0/middlewares"
 	"github.com/kappaprideonly/ege_bot_2.0/sheduler"
 	"github.com/kappaprideonly/ege_bot_2.0/task"
 	tele "gopkg.in/telebot.v3"
@@ -29,23 +29,23 @@ func main() {
 
 	bot := bot.NewBot()
 
-	bot.Use(middleware.Logger())
-	bot.Use(middleware.OnlyPrivate())
+	bot.Use(middlewares.Logger())
+	bot.Use(middlewares.OnlyPrivate())
 
-	bot.Handle("/start", handler.Auth)
+	bot.Handle("/start", handlers.Auth)
 
-	bot.Handle("/record", handler.Record)
-	bot.Handle("/leaderboard", handler.LeaderBoard)
-	bot.Handle("/stats", handler.Stats)
-	bot.Handle("/help", handler.Help)
+	bot.Handle("/record", handlers.Record)
+	bot.Handle("/leaderboard", handlers.LeaderBoard)
+	bot.Handle("/stats", handlers.Stats)
+	bot.Handle("/help", handlers.Help)
 
-	bot.Handle("/menu", handler.Menu)
-	bot.Handle("/begin", handler.Begin)
-	bot.Handle(tele.OnText, handler.ProcessTraining)
+	bot.Handle("/menu", handlers.Menu)
+	bot.Handle("/begin", handlers.Begin)
+	bot.Handle(tele.OnText, handlers.ProcessTraining)
 
 	adminOnly := bot.Group()
-	adminOnly.Use(middleware.OnlyAdmin())
-	adminOnly.Handle("/admin", handler.AdminTest)
+	adminOnly.Use(middlewares.OnlyAdmin())
+	adminOnly.Handle("/admin", handlers.AdminTest)
 
 	bot.Start()
 }

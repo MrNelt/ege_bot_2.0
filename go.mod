@@ -1,6 +1,6 @@
 module github.com/kappaprideonly/ege_bot_2.0
 
-go 1.19
+go 1.20
 
 require (
 	github.com/redis/go-redis/v9 v9.0.3
