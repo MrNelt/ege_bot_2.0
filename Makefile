@@ -4,23 +4,14 @@ PACKAGE_NAME=github.com/kappaprideonly/ege_bot_2.0
 run:
 	go run app.go
 
-clean:
-	rm -f ${BINARY_NAME}
+build-service:
+	sudo docker-compose build
 
-build-docker:
-	sudo docker build -t $(BINARY_NAME) .
+run-service:
+	sudo docker-compose up -d $(BINARY_NAME)
 
-run-docker-release:
-	sudo docker run --name $(BINARY_NAME) -d $(BINARY_NAME)
+stop-service:
+	sudo docker-compose stop
 
-run-docker:
-	sudo docker run --name $(BINARY_NAME)
-
-clean-docker:
-	sudo docker remove $(BINARY_NAME)
-
-stop-docker:
-	sudo docker stop $(BINARY_NAME)
-
-tidy:
-	go mod tidy
+destroy-service:
+	sudo docker-compose down

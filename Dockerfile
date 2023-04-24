@@ -9,6 +9,4 @@ COPY . ./
 
 RUN go build -o /bot
 
-EXPOSE 8080
-
 CMD [ "/bot" ]

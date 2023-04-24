@@ -18,8 +18,8 @@ type SessionDB interface {
 var sessionDB SessionDB
 
 func Init() {
-	host := os.Getenv("HOST_REDIS")
-	pass := os.Getenv("PASS_REDIS")
+	host := os.Getenv("REDIS_HOST")
+	pass := os.Getenv("REDIS_PASSWORD")
 	minutes, errParse := strconv.Atoi(os.Getenv("SESSION_TIME_MIN"))
 	if errParse != nil {
 		log.Panic("[session] Can't parse SESSION_TIME_MIN to int")

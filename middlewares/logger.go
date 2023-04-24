@@ -7,7 +7,6 @@ import (
 )
 
 func Logger() tele.MiddlewareFunc {
-
 	return func(next tele.HandlerFunc) tele.HandlerFunc {
 		return func(ctx tele.Context) error {
 			log.Tracef("%s : %s", ctx.Sender().FirstName, ctx.Text())

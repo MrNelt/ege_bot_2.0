@@ -23,12 +23,12 @@ var storage Storage
 func Init() {
 	dsl := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
-		os.Getenv("HOST_DB"),
-		os.Getenv("USER_DB"),
-		os.Getenv("PASS_DB"),
-		os.Getenv("NAME_DB"),
-		os.Getenv("PORT_DB"),
-		os.Getenv("SSLMODE"))
+		os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DB"),
+		os.Getenv("POSTGRES_PORT"),
+		os.Getenv("POSTGRES_SSLMODE"))
 	log.Debug("[postgres] %s", dsl)
 	storage = NewPgStorage(dsl)
 }

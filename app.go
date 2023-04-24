@@ -1,8 +1,6 @@
 package main
 
 import (
-	log "github.com/bearatol/lg"
-	"github.com/joho/godotenv"
 	"github.com/kappaprideonly/ege_bot_2.0/bot"
 	"github.com/kappaprideonly/ege_bot_2.0/handlers"
 	"github.com/kappaprideonly/ege_bot_2.0/keyboard"
@@ -15,13 +13,10 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Panic("No .env file found")
-	}
+	sessionDB.Init()
 	task.Init()
 	storage.Init()
 	keyboard.Init()
-	sessionDB.Init()
 	sheduler.Init()
 }
 

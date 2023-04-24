@@ -10,8 +10,8 @@ require (
 )
 
 require (
-	github.com/bearatol/lg v1.3.0 // indirect
-	github.com/go-co-op/gocron v1.19.0 // indirect
+	github.com/bearatol/lg v1.3.0
+	github.com/go-co-op/gocron v1.19.0
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 )
@@ -24,7 +24,6 @@ require (
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 )
