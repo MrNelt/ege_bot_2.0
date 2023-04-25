@@ -34,3 +34,5 @@ services:
 volumes:
   cache:
     driver: local
+  db:
+    driver: local
