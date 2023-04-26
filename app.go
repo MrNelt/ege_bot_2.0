@@ -21,7 +21,6 @@ func init() {
 }
 
 func main() {
-
 	bot := bot.NewBot()
 
 	bot.Use(middlewares.Logger())
@@ -37,10 +36,6 @@ func main() {
 	bot.Handle("/menu", handlers.Menu)
 	bot.Handle("/begin", handlers.Begin)
 	bot.Handle(tele.OnText, handlers.ProcessTraining)
-
-	adminOnly := bot.Group()
-	adminOnly.Use(middlewares.OnlyAdmin())
-	adminOnly.Handle("/admin", handlers.AdminTest)
 
 	bot.Start()
 }
