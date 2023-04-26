@@ -10,6 +10,8 @@ build-service:
 run-service:
 	sudo docker-compose up -d $(BINARY_NAME)
 
+build-run-service: build-service run-service
+
 stop-service:
 	sudo docker-compose stop
 
