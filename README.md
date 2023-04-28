@@ -4,10 +4,13 @@
 ![Docker](https://img.shields.io/badge/-Docker-090909?style=for-the-badge&logo=docker&logoColor=F88C00)
 ![Telebot](https://img.shields.io/badge/-Telebot-090909?style=for-the-badge&logo=telegram&logoColor=E9D54D)
 
+# Бот для подготовки к 4 заданию ЕГЭ Русский язык
 
 <img src="./images/icon.jpg" width="250">
 
-# Бот для подготовки к 4 заданию ЕГЭ Русский язык
+# Реализованные команды:
+
+/start - точка входа, регистрация пользователя
 
 
 
