@@ -24,7 +24,7 @@ Linux Server with docker-compose:
 
 `make build-run-service`
 
-![Gameplay](./images/gameplay.png)
+<img src="./images/gameplay.png" width="450">
 
 
 
