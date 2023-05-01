@@ -21,7 +21,7 @@ func Auth(ctx tele.Context) error {
 		}
 		return ctx.Send(message, keyboard.GetMenuKeyboard())
 	}
-	go storage.AddUser(uint(ctx.Sender().ID), 0, ctx.Sender().FirstName)
+	storage.AddUser(uint(ctx.Sender().ID), 0, ctx.Sender().FirstName)
 	message := fmt.Sprintf("✅ <b>%s</b>, Вы успешно зарегистрированы!\nНачать тренировку - <b>/begin</b>", ctx.Sender().FirstName)
 	session, err := sessionDB.GetToken(uint(ctx.Sender().ID))
 	if err != nil {
